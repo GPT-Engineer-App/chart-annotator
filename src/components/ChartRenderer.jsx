@@ -1,16 +1,16 @@
 import React from 'react';
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js';
+import { Line, Bar, Pie } from 'react-chartjs-2';
+import { Chart as ChartJS, LineElement, BarElement, PointElement, ArcElement, LinearScale, Title, CategoryScale } from 'chart.js';
 
-ChartJS.register(LineElement, PointElement, LinearScale, Title, CategoryScale);
+ChartJS.register(LineElement, BarElement, PointElement, ArcElement, LinearScale, Title, CategoryScale);
 
-const ChartRenderer = ({ data }) => {
-  const chartData = {
-    labels: data.map((_, index) => index + 1),
+const ChartRenderer = ({ data, chartType, chartTitle, chartData }) => {
+  const chartConfig = {
+    labels: chartData.map((row) => row[0]),
     datasets: [
       {
-        label: 'Annotated Data',
-        data: data.map(point => point.y),
+        label: chartTitle,
+        data: chartData.map((row) => row[1]),
         borderColor: 'rgba(75, 192, 192, 1)',
         backgroundColor: 'rgba(75, 192, 192, 0.2)',
         fill: false,
@@ -18,7 +18,20 @@ const ChartRenderer = ({ data }) => {
     ],
   };
 
-  return <Line data={chartData} />;
+  const renderChart = () => {
+    switch (chartType) {
+      case 'line':
+        return <Line data={chartConfig} />;
+      case 'bar':
+        return <Bar data={chartConfig} />;
+      case 'pie':
+        return <Pie data={chartConfig} />;
+      default:
+        return null;
+    }
+  };
+
+  return <div>{renderChart()}</div>;
 };
 
 export default ChartRenderer;
